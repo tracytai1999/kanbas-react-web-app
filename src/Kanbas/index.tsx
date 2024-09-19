@@ -7,6 +7,8 @@ export default function Kanbas() {
   return (
     <div id="wd-kanbas">
         <h1>Kanbas</h1>
+        <h3>Ziyang Tai(tracytai1999)</h3>
+        <h3>CS5610 2024Fall</h3>
       <table>
         <tr>
           <td valign="top">
