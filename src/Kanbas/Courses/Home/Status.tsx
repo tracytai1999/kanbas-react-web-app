@@ -5,7 +5,6 @@ export default function CourseStatus() {
         <div className="wd-contents">
             <button>Unpublish</button> <button>Publish</button>
         </div>
-        <h3></h3>
         <div className="wd-contents">
             <button>Import Existing Content</button>
             <button>Import The Commons</button>
