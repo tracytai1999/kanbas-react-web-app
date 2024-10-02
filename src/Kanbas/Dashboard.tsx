@@ -8,11 +8,26 @@ export default function Dashboard() {
       <div id="wd-dashboard-courses">
         <div className="wd-dashboard-course">
           <Link className="wd-dashboard-course-link"
-                to="/Kanbas/Courses/1234/Home">
+                to="/Kanbas/Courses/5700/Home">
             <img src="/images/reactjs.jpg" width={200} alt="react logo"/>
             <div>
               <h5>
-                 CS1234 React JS
+                 CS5700 React JS
+                 </h5>
+              <p className="wd-dashboard-course-title">
+                Full Stack software developer
+              </p>
+              <button> Go </button>
+            </div>
+          </Link>
+        </div>
+        <div className="wd-dashboard-course">
+          <Link className="wd-dashboard-course-link"
+                to="/Kanbas/Courses/5610/Home">
+            <img src="/images/reactjs.jpg" width={200} alt="react logo"/>
+            <div>
+              <h5>
+                 CS5610 React JS
                  </h5>
               <p className="wd-dashboard-course-title">
                 Full Stack software developer
@@ -36,7 +51,21 @@ export default function Dashboard() {
             </div>
           </Link>
         </div>
-        <div className="wd-dashboard-course"> ... </div>
+        <div className="wd-dashboard-course">
+          <Link className="wd-dashboard-course-link"
+                to="/Kanbas/Courses/4321/Home">
+            <img src="/images/reactjs.jpg" width={200} alt="react logo"/>
+            <div>
+              <h5>
+                 CS4321 React JS
+                 </h5>
+              <p className="wd-dashboard-course-title">
+                Full Stack software developer
+              </p>
+              <button> Go </button>
+            </div>
+          </Link>
+        </div>
       </div>
     </div>
   );
