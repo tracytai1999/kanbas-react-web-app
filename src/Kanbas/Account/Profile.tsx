@@ -16,7 +16,7 @@ export default function Profile() {
                         type="text" 
                         className="form-control" 
                         placeholder="username"
-                        defaultValue="alice" 
+                        defaultValue="zt24" 
                     />
                 </div>
 
@@ -34,7 +34,7 @@ export default function Profile() {
                         type="text" 
                         className="form-control" 
                         placeholder="First Name"
-                        defaultValue="Alice" 
+                        defaultValue="Ziyang" 
                     />
                 </div>
 
@@ -43,7 +43,7 @@ export default function Profile() {
                         type="text" 
                         className="form-control" 
                         placeholder="Last Name"
-                        defaultValue="Wonderland" 
+                        defaultValue="Tai" 
                     />
                 </div>
 
@@ -62,7 +62,7 @@ export default function Profile() {
                         type="email" 
                         className="form-control" 
                         placeholder="email"
-                        defaultValue="alice@wonderland.com" 
+                        defaultValue="tai.zi@northeastern.edu" 
                     />
                 </div>
 
