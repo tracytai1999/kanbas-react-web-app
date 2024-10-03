@@ -1,5 +1,3 @@
-import exp from "constants"
-
 const Flex = () => {
     return(
         <div id="wd-css-flex">
