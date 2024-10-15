@@ -1,7 +1,7 @@
 import { BsSearch } from "react-icons/bs";
 import { BsPlus } from "react-icons/bs";
 
-export default function ModulesControls() {
+export default function AssignmentsControls() {
     return (
         <div id = "wd-assignment-controls" className="d-flex align-items-center gap-2">
             <div className="input-group" style={{ flexGrow: 1 }}>

@@ -1,46 +1,27 @@
+import { useParams } from "react-router-dom";
+import * as db from "../../Database";
+
 export default function AssignmentEditor() {
+    const { aid } = useParams();
+    
+    const assignment = db.assignments.find((assignment) =>
+        assignment._id === aid);
+
     return(
         <div id="wd-assignment-editor" className="p-4">
             <div className="mb-4">
                 <label htmlFor="wd-name">
                     <h5>Assignment Name</h5>
                 </label>
-                <input type="text"
+                <input value={assignment?._id}
+                    type="text"
                     id="wd-name"
-                    className="form-control"
-                    value="A1"/>
+                    className="form-control"/>
             </div>
 
             <div className="mb-4 p-3 border" style={{ whiteSpace: 'pre-wrap' }}>
                 <p>
-                    The assignment is <span className="text-danger">available online</span>.
-                    Submit a link to the landing page of your Web application running on{' '}
-                    <a href="https://netlify.com" target="_blank" rel="noopener noreferrer">
-                        Netlify
-                    </a>
-                    .
-                </p>
-                <p>
-                    The landing page should include the following:
-                </p>
-                <ul>
-                    <li>Your full name and section</li>
-                    <li>Links to each of the lab assignments</li>
-                    <li>
-                        Link to the{' '}
-                        <a href="https://ziyangtai-kanbas-react-web-app.netlify.app/" target="_blank" rel="noopener noreferrer">
-                            Kanbas
-                        </a>{' '}
-                        application
-                    </li>
-                    <li>Links to all relevant source code repositories</li>
-                </ul>
-                <p>
-                    The{' '}
-                    <a href="https://ziyangtai-kanbas-react-web-app.netlify.app/" target="_blank" rel="noopener noreferrer">
-                        Kanbas
-                    </a>{' '}
-                    application should include a link to navigate back to the landing page.
+                    {assignment?.description}
                 </p>
             </div>
 
@@ -51,7 +32,7 @@ export default function AssignmentEditor() {
                         <label htmlFor="wd-points"><h6>Points</h6></label>
                     </div>
                     <div className="col-9">
-                        <input type="number" id="wd-points" className="form-control" value={100} />
+                        <input type="number" id="wd-points" className="form-control" value={assignment?.points} />
                     </div>
                 </div>
 
@@ -131,20 +112,20 @@ export default function AssignmentEditor() {
                                 <label htmlFor="wd-due-date"><h6><b>Due</b></h6></label>
                             </div>
                             <div className="col-9">
-                                <input type="datetime-local" id="wd-due-date" className="form-control" value="2024-05-13T23:59" />
+                                <input type="datetime-local" id="wd-due-date" className="form-control" value={assignment?.dueDate} />
                             </div>
                             <br/>
                             <div className="row">
                                 <div className="col-md-6 mb-3">
                                     <label htmlFor="wd-available-from" className="form-label"><strong>Available from</strong></label>
                                     <div className="input-group">
-                                        <input type="datetime-local" id="wd-due-date" className="form-control" value="2024-05-06T20:00" />
+                                        <input type="datetime-local" id="wd-due-date" className="form-control" value={assignment?.availableDate} />
                                     </div>
                                 </div>
                                 <div className="col-md-6 mb-3">
                                     <label htmlFor="wd-available-until" className="form-label"><strong>Until</strong></label>
                                     <div className="input-group">
-                                        <input type="datetime-local" id="wd-due-date" className="form-control" value="2024-05-13T23:59" />
+                                        <input type="datetime-local" id="wd-due-date" className="form-control" value={assignment?.dueDate} />
                                     </div>
                                 </div>
                             </div>
@@ -152,7 +133,6 @@ export default function AssignmentEditor() {
                     </div>
                 </div>
                 <hr/>
-                {/* Buttons */}
                 <div className="d-flex justify-content-end mt-4">
                     <button id="wd-cancel" className="btn btn-light border me-2">Cancel</button>
                     <button id="wd-save" className="btn btn-danger">Save</button>
