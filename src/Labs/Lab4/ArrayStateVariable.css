@@ -1,0 +1,52 @@
+#wd-array-state-variables {
+    font-family: Arial, sans-serif;
+  }
+  
+  h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 1em;
+  }
+  
+  .add-btn {
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 1em;
+    font-size: 1em;
+  }
+  
+  .array-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .array-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .array-item:last-child {
+    border-bottom: none;
+  }
+  
+  .item-number {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  .delete-btn {
+    background-color: red;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 0.9em;
+  }
+  
