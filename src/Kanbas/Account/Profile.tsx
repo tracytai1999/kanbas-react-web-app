@@ -1,89 +1,58 @@
-import { Link } from "react-router-dom";
-import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setCurrentUser } from "./reducer";
+import * as client from "./client";
+
 export default function Profile() {
-  const [birthday, setBirthday] = useState('');
-    const [role, setRole] = useState('User');
-
-
+  const [profile, setProfile] = useState<any>({});
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const updateProfile = async () => {
+    const updatedProfile = await client.updateUser(profile);
+    dispatch(setCurrentUser(updatedProfile));
+  };
+  const fetchProfile = () => {
+    if (!currentUser) return navigate("/Kanbas/Account/Signin");
+    setProfile(currentUser);
+  };
+  const signout = async () => {
+    await client.signout();
+    dispatch(setCurrentUser(null));
+    navigate("/Kanbas/Account/Signin");
+  };
+  // eslint-disable-next-line
+  useEffect(() => { fetchProfile(); }, []);
   return (
-    <div id="wd-profile-screen">
-      <div className="container d-flex justify-content-center align-items-center vh-600">
-            <div style={{ maxWidth: "700px", width: "100%" }}>
-                <h2 className="mb-4">Profile</h2>
-
-                <div className="form-group mb-3">
-                    <input 
-                        type="text" 
-                        className="form-control" 
-                        placeholder="username"
-                        defaultValue="zt24" 
-                    />
-                </div>
-
-                <div className="form-group mb-3">
-                    <input 
-                        type="password" 
-                        className="form-control" 
-                        placeholder="password"
-                        defaultValue="123" 
-                    />
-                </div>
-
-                <div className="form-group mb-3">
-                    <input 
-                        type="text" 
-                        className="form-control" 
-                        placeholder="First Name"
-                        defaultValue="Ziyang" 
-                    />
-                </div>
-
-                <div className="form-group mb-3">
-                    <input 
-                        type="text" 
-                        className="form-control" 
-                        placeholder="Last Name"
-                        defaultValue="Tai" 
-                    />
-                </div>
-
-                <div className="form-group mb-3">
-                    <input 
-                        type="date" 
-                        id="birthday" 
-                        className="form-control" 
-                        value={birthday}
-                        onChange={(e) => setBirthday(e.target.value)} 
-                    />
-                </div>
-
-                <div className="form-group mb-3">
-                    <input 
-                        type="email" 
-                        className="form-control" 
-                        placeholder="email"
-                        defaultValue="tai.zi@northeastern.edu" 
-                    />
-                </div>
-
-                <div className="form-group mb-4">
-                    <select 
-                        id="role" 
-                        className="form-select" 
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}>
-                        <option value="User">User</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Student">Student</option>
-                        <option value="Faculty">Faculty</option>
-                    </select>
-                </div>
-
-                <Link to="/Kanbas/Account/Signin" className="btn btn-primary btn-block w-100 mb-3">
-                    Signup
-                </Link>
-            </div>
+    <div className="wd-profile-screen">
+      <h3>Profile</h3>
+      {profile && (
+        <div>
+          <input defaultValue={profile.username} id="wd-username" className="form-control mb-2"
+                 onChange={(e) => setProfile({ ...profile, username:  e.target.value })}/>
+          <input defaultValue={profile.password} id="wd-password" className="form-control mb-2"
+                 onChange={(e) => setProfile({ ...profile, password:  e.target.value })}/>
+          <input defaultValue={profile.firstName} id="wd-firstname" className="form-control mb-2"
+                 onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}/>
+          <input defaultValue={profile.lastName} id="wd-lastname" className="form-control mb-2"
+                 onChange={(e) => setProfile({ ...profile, lastName:  e.target.value })}/>
+          <input defaultValue={profile.dob} id="wd-dob" className="form-control mb-2"
+                 onChange={(e) => setProfile({ ...profile, dob: e.target.value })} type="date"/>
+          <input defaultValue={profile.email} id="wd-email" className="form-control mb-2"
+                 onChange={ (e) => setProfile({ ...profile, email: e.target.value })}/>
+          <select onChange={(e) => setProfile({ ...profile, role:  e.target.value })}
+                 className="form-control mb-2" id="wd-role">
+            <option value="USER">User</option>            <option value="ADMIN">Admin</option>
+            <option value="FACULTY">Faculty</option>      <option value="STUDENT">Student</option>
+          </select>
+          <div>
+            <button onClick={updateProfile} className="btn btn-primary w-100 mb-2"> Update </button>
+            <button onClick={signout} className="btn btn-danger w-100 mb-2" id="wd-signout-btn">
+              Sign out
+            </button>
+          </div>
         </div>
-    </div>
-);}
+      )}
+</div>);}
 
