@@ -2,20 +2,18 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleShowAllCourses, enrollInCourse, unenrollFromCourse } from "./coursesReducer";
 
-
 export default function Dashboard(
 { courses, course, setCourse, addNewCourse,
-  deleteCourse, updateCourse }: {
+  deleteCourse, updateCourse, fetchCourses }: {
   courses: any[]; course: any; setCourse: (course: any) => void;
   addNewCourse: () => void; deleteCourse: (course: any) => void;
-  updateCourse: () => void; })
+  updateCourse: () => void; fetchCourses: () => void})
  {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isStudent = currentUser.role === "STUDENT";
   const  enrollments  = useSelector((state: any) => state.coursesReducer.enrollments);
   const {showAllCourses} = useSelector((state: any) => state.coursesReducer);
   const dispatch = useDispatch();
-
   const handleToggleEnrollmentView = () => {
     dispatch(toggleShowAllCourses());
   };
@@ -33,7 +31,7 @@ export default function Dashboard(
       (enrollment: any) =>
         enrollment.user === currentUser._id &&
         enrollment.course === course._id));
-
+  
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
@@ -54,7 +52,6 @@ export default function Dashboard(
         </div>
     )}
 
-    {/* Enrollments Toggle Button for Students */}
     {isStudent && (
         <button className="btn btn-primary float-end mb-3" onClick={handleToggleEnrollmentView}>
           {showAllCourses ? "View Enrollments" : "All Courses"}

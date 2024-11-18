@@ -4,18 +4,21 @@ import AssignmentsControls from "./AssignmentsControls";
 import AssignmentHeader from "../Modules/AssignmentHeader";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import { useParams, useNavigate } from "react-router";
-import { deleteAssignment } from './reducer';
+import { deleteAssignment, setAssignment } from './reducer';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
+import * as assignmentClient from "./client";
+import * as coursesClient from "../client";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Assignments() {
-    const assignments = useSelector((state: any) => state.assignmentReducer.assignments);
+    const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+    console.log("Initial Redux State:", assignments);
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    console.log(assignments)
     const { cid } = useParams();
     const handleDelete = () => {
         const result = window.confirm("Do you want to proceed to delete the assignment?");
@@ -27,11 +30,25 @@ export default function Assignments() {
           return false;
         }
     };
-
+    const removeAssignment = async (assignmentId: string) => {
+        await assignmentClient.deleteAssignment(assignmentId);
+        dispatch(deleteAssignment(assignmentId));
+    };
+    const fetchAssignments = useCallback(async () => {
+        console.log("fetchAssignments called");
+        const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+        console.log("API Response:", assignments); // Log API response
+        dispatch(setAssignment(assignments));
+    }, [cid, dispatch]); // Memoize to ensure a stable reference
+    
+    useEffect(() => {
+        console.log("useEffect triggered");
+        fetchAssignments();
+    }, [fetchAssignments]); 
     return (
         <div id="wd-assignments">
             <AssignmentsControls/><br/><br />
-            <li className="wd-module list-group-item p-0 mb-3 fs-5 border-gray">
+            <li className="wd-assignment list-group-item p-0 mb-3 fs-5 border-gray">
                 <div className="wd-title d-flex justify-content-between align-items-center p-3 ps-2 bg-secondary">
                     <div className="d-flex align-items-center">
                     <BsGripVertical className="me-2 fs-3" />
@@ -44,16 +61,15 @@ export default function Assignments() {
                     <BsPlus className="fs-3" />
                     </div>
                 </div>
-                {assignments
-                    .filter((a:any) => a.course === cid)
-                    .map((assignment: any) => (
-                        <div className="wd-lesson list-group rounded-0">
+                {console.log("Assignments in Render:", assignments)} {/* Check value in render */}
+                {assignments && assignments.map((assignment: any) => (
+                        <div key={assignment._id} className="wd-lesson list-group rounded-0" >
                             <li className="list-group-item assignment-item d-flex justify-content-between align-items-center p-3 border-bottom">
                                 <div className="d-flex align-items-center">
                                     <BsGripVertical className="me-3 fs-4" />
                                     <FaFilePen className="me-2 text-success fs-4" />
                                     <div className="assignment-details">
-                                        <Link className="fw-bold ps-0" to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
+                                        <Link className="fw-bold ps-0" to={`/Kanbas/Courses/${cid}/assignments/${assignment._id}`}>
                                             {assignment._id}
                                         </Link>
                                         <div className="d-flex align-items-center">
@@ -73,8 +89,8 @@ export default function Assignments() {
                                     <div>
                                       {currentUser.role === "FACULTY" && (
                                             <FaTrash className="pb-0 me-1 btn-danger"
-                                            onClick={() => {handleDelete() ? dispatch(deleteAssignment(assignment._id)) : 
-                                                navigate(`/Kanbas/Courses/${cid}/Assignments`);}}/>
+                                            onClick={() => {handleDelete() ? removeAssignment(assignment._id) : 
+                                                navigate(`/Kanbas/Courses/${cid}/assignments`);}}/>
                                         )}
                                     </div>
                                     <GreenCheckmark />

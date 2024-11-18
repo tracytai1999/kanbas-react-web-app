@@ -1,19 +1,22 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import React from 'react';
-import { addAssignment, updateAssignment } from "./reducer";
+import { addAssignment, updateAssignment, setAssignment, cancelAssignmentUpdate } from "./reducer";
+import * as assignmentClient from "./client"
+import * as coursesClient from "../client"
 
 export default function AssignmentEditor(){
     const { assignmentId, cid } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const isNewAssignment = !assignmentId || assignmentId.trim() === '';
+    const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+    const isNewAssignment = !assignments.some((existingAssignment: any) => existingAssignment._id === assignmentId);
     const [assignment, setAssignment] = useState({
             _id: "",
             title: "",
             course: cid,
-            description: "New Description",
+            description: "",
             points: 100,
             dueDate: "",
             dueDateString: "",
@@ -24,23 +27,37 @@ export default function AssignmentEditor(){
         const { id, value } = e.target;
         setAssignment((prev) => ({ ...prev, [id]: value }));
       };
-    
+      const updatesAssignment = async (assignment: any) => {
+        if (isNewAssignment) {
+            await coursesClient.createAssignmentForCourse(cid as string, assignment);
+            dispatch(addAssignment(assignment));
+        }else {
+            await assignmentClient.updateAssignment(assignmentId);
+            dispatch(updateAssignment(assignment));
+        }
+      };
       const handleSave = () => {
         if (isNewAssignment) {
             const newAssignment = { ...assignment, _id: new Date().getTime().toString(), course: cid };
             console.log(newAssignment);
             dispatch(updateAssignment(newAssignment));
             dispatch(addAssignment(newAssignment));
-        } else {
+        }else {
             dispatch(updateAssignment(assignment));
-        }
-        navigate(-1);
+        } 
+        navigate(-1)
       };
-    
       const handleCancel = () => {
         navigate(-1); // Navigate back to Assignments screen without saving
       };
-
+      useEffect(() => {
+        const assignmentData = assignments.find((a: any) => a._id === assignmentId);
+        if (assignmentData) {
+          dispatch(updateAssignment(assignment));
+        } else {
+          dispatch(cancelAssignmentUpdate());
+        }
+      }, [dispatch, assignmentId]);
     return(
         <div id="wd-assignment-editor" className="p-4">
             <div className="mb-4">
@@ -60,6 +77,7 @@ export default function AssignmentEditor(){
                     value={assignment.description}
                     id="description"
                     className="form-control"
+                    placeholder="New Description"
                     onChange={handleChange}/>
             </div>
 
