@@ -175,7 +175,7 @@ export default function AssignmentAdder(){
                                     <label htmlFor="wd-available-until" className="form-label"><strong>Until</strong></label>
                                     <div className="input-group">
                                         <input type="datetime-local" id="wd-available-until-date" className="form-control" value={assignment.dueDate} 
-                                        onChange={(e) => setAssignment((prev) => ({ ...prev, dueDate: e.target.value, availableDateString: formatDate(e.target.value) }))}/>
+                                        onChange={(e) => setAssignment((prev) => ({ ...prev, dueDate: e.target.value, dueDateString: formatDate(e.target.value) }))}/>
                                     </div>
                                 </div>
                             </div>
