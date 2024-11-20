@@ -25,7 +25,7 @@ export default function AssignmentsControls() {
                 </button>
                 <button
                     className="btn btn-danger d-flex align-items-center justify-content-center"
-                    onClick={() => navigate("Editor")}>
+                    onClick={() => navigate("Adder")}>
                     <BsPlus /> Assignment
                 </button>
             </div>

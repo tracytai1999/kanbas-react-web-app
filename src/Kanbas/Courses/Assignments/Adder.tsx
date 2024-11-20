@@ -6,28 +6,26 @@ import { addAssignment, updateAssignment, setAssignment, cancelAssignmentUpdate 
 import * as assignmentClient from "./client"
 import * as coursesClient from "../client"
 
-export default function AssignmentEditor(){
-    const { aid, cid } = useParams();
+export default function AssignmentAdder(){
+    const { cid } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { assignments } = useSelector((state: any) => state.assignmentsReducer);
-    const assignment = assignments.find((a: any) => a._id === aid);
-    const [newAssignment, setAssignment] = useState(
-        assignment ||{
-            _id: aid,
-            title: assignment.title,
+    const [assignment, setAssignment] = useState({
+            _id: new Date().getTime().toString(),
+            title: "",
             course: cid,
-            description: assignment.description,
-            points: assignment.points,
-            dueDate: assignment.dueDate,
-            dueDateString: assignment.dueDateString,
-            availableDate: assignment.availableDate,
-            availableDateString: assignment.availableDateString
-        });
+            description: "",
+            points: 100,
+            dueDate: "",
+            dueDateString: "",
+            availableDate: "",
+            availableDateString: ""
+    });
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         const options : Intl.DateTimeFormatOptions = { month: "long", day: "numeric", year: "numeric" };
         const formattedDate = date.toLocaleDateString("en-US", options);
+    
         const day = date.getDate();
         const suffix =
             day % 10 === 1 && day !== 11
@@ -37,47 +35,40 @@ export default function AssignmentEditor(){
                 : day % 10 === 3 && day !== 13
                 ? "rd"
                 : "th";
+    
         return formattedDate.replace(/\d+/, `${day}${suffix}`);
     };
-    const updatesAssignment = async (newAssignment: any) => {
-        await assignmentClient.updateAssignment(newAssignment);
-        dispatch(updateAssignment(newAssignment));
-        navigate(-1);
+    const updatesAssignment = async (assignment: any) => {
+        await coursesClient.createAssignmentForCourse(cid as string, assignment);
+        dispatch(addAssignment(assignment));
+    navigate(-1)
     };
     const handleCancel = () => {
-        navigate(-1);
-    };
-    const handleChange = (field: string, value: any) => {
-        setAssignment((prev: any) => ({
-            ...prev,
-            [field]: value,
-            ...(field === "dueDate" && { dueDateString: formatDate(value) }),
-            ...(field === "availableDate" && { availableDateString: formatDate(value) }),
-        }));
+        navigate(-1); // Navigate back to Assignments screen without saving
     };
     useEffect(() => {
-    }, [dispatch, aid]);
+    }, [dispatch]);
     return(
         <div id="wd-assignment-editor" className="p-4">
             <div className="mb-4">
                 <label htmlFor="wd-name">
                     <h5>Assignment Name</h5>
                 </label>
-                <input value={newAssignment.title}
+                <input value={assignment.title}
                     type="text"
                     id="title"
                     className="form-control"
                     placeholder="Assignment Name"
-                    onChange={(e) => handleChange("title", e.target.value)}/>
+                    onChange={(e) => setAssignment((prev) => ({ ...prev, title: e.target.value }))}/>
             </div>
 
             <div className="mb-4 p-3 border" style={{ whiteSpace: 'pre-wrap' }}>
                 <textarea
-                    value={newAssignment.description}
+                    value={assignment.description}
                     id="description"
                     className="form-control"
                     placeholder="New Description"
-                    onChange={(e) => handleChange("description", e.target.value)}/>
+                    onChange={(e) => setAssignment((prev) => ({ ...prev, description: e.target.value }))}/>
             </div>
 
             <div className="grouped-sections p-3 mb-4">
@@ -87,8 +78,8 @@ export default function AssignmentEditor(){
                         <label htmlFor="wd-points"><h6>Points</h6></label>
                     </div>
                     <div className="col-9">
-                        <input type="number" id="points" className="form-control" value={newAssignment.points} 
-                        onChange={(e) => handleChange("points", Number(e.target.value))} step="1"/>
+                        <input type="number" id="points" className="form-control" value={assignment.points} 
+                        onChange={(e) => setAssignment((prev) => ({ ...prev, points: Number(e.target.value) }))} step="1"/>
                     </div>
                 </div>
 
@@ -169,8 +160,7 @@ export default function AssignmentEditor(){
                             </div>
                             <div className="col-9">
                                 <input type="datetime-local" id="wd-due-date" 
-                                className="form-control" value={newAssignment.dueDate} 
-                                onChange={(e) => handleChange("dueDate", e.target.value)}/>
+                                className="form-control" value={assignment.dueDate} onChange={(e) => setAssignment((prev) => ({ ...prev, dueDate: e.target.value, dueDateString: formatDate(e.target.value) }))}/>
                             </div>
                             <br/>
                             <div className="row">
@@ -178,14 +168,14 @@ export default function AssignmentEditor(){
                                     <label htmlFor="wd-available-from" className="form-label"><strong>Available from</strong></label>
                                     <div className="input-group">
                                         <input type="datetime-local" id="wd-available-from-date" className="form-control" value={assignment.availableDate} 
-                                        onChange={(e) => handleChange("availableDate", e.target.value)}/>
+                                        onChange={(e) => setAssignment((prev) => ({ ...prev, availableDate: e.target.value, availableDateString: formatDate(e.target.value) }))}/>
                                     </div>
                                 </div>
                                 <div className="col-md-6 mb-3">
                                     <label htmlFor="wd-available-until" className="form-label"><strong>Until</strong></label>
                                     <div className="input-group">
                                         <input type="datetime-local" id="wd-available-until-date" className="form-control" value={assignment.dueDate} 
-                                        onChange={(e) => handleChange("dueDate", e.target.value)}/>
+                                        onChange={(e) => setAssignment((prev) => ({ ...prev, dueDate: e.target.value, availableDateString: formatDate(e.target.value) }))}/>
                                     </div>
                                 </div>
                             </div>
@@ -197,7 +187,7 @@ export default function AssignmentEditor(){
                     <button onClick={handleCancel} className="btn btn-light border me-2">
                         Cancel
                     </button>
-                    <button onClick={() => updatesAssignment(newAssignment)} className="btn btn-danger">
+                    <button onClick={() => updatesAssignment(assignment)} className="btn btn-danger">
                         Save
                     </button>
                 </div>
