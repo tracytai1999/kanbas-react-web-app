@@ -7,7 +7,7 @@ export default function AccountNavigation() {
 
   // Conditional links based on user authentication status
   const links = currentUser ? ["Profile"] : ["Signin", "Signup"];
-
+  const active = (path: string) => (pathname.includes(path) ? "active" : "");
   return (
     <nav>
       <ul className="wd list-group fs-5 rounded-0">
@@ -19,7 +19,17 @@ export default function AccountNavigation() {
               {link}
             </Link>
           </li>
+          
         ))}
+        {currentUser && currentUser.role === "ADMIN" && (
+        <li key="Users" className="list-group-item border border-0" >
+        <Link
+          to={`/Kanbas/Account/Users`}
+          className={`nav-link ${pathname.includes("Users") ? "active" : "text-danger"}`}>
+          Users
+        </Link>
+        </li> )}
+
       </ul>
     </nav>
   );

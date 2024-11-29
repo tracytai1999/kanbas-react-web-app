@@ -31,7 +31,6 @@ export default function Dashboard(
       (enrollment: any) =>
         enrollment.user === currentUser._id &&
         enrollment.course === course._id));
-  
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
@@ -57,8 +56,6 @@ export default function Dashboard(
           {showAllCourses ? "View Enrollments" : "All Courses"}
         </button>
     )}
-
-
       <h2 id="wd-dashboard-published">Published Courses ({displayedCourses.length})</h2> <hr />
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
