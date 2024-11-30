@@ -4,33 +4,16 @@ import { toggleShowAllCourses, enrollInCourse, unenrollFromCourse } from "./cour
 
 export default function Dashboard(
 { courses, course, setCourse, addNewCourse,
-  deleteCourse, updateCourse, fetchCourses }: {
+  deleteCourse, updateCourse, enrolling, setEnrolling, updateEnrollment }: {
   courses: any[]; course: any; setCourse: (course: any) => void;
   addNewCourse: () => void; deleteCourse: (course: any) => void;
-  updateCourse: () => void; fetchCourses: () => void})
+  updateCourse: () => void; enrolling: boolean; setEnrolling: (enrolling: boolean) => void;
+  updateEnrollment: (courseId: string, enrolled: boolean) => void})
  {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isStudent = currentUser.role === "STUDENT";
-  const  enrollments  = useSelector((state: any) => state.coursesReducer.enrollments);
-  const {showAllCourses} = useSelector((state: any) => state.coursesReducer);
-  const dispatch = useDispatch();
-  const handleToggleEnrollmentView = () => {
-    dispatch(toggleShowAllCourses());
-  };
 
-  const handleEnroll = (courseId: any) => {
-    dispatch(enrollInCourse({ userId: currentUser._id, courseId }));
-  };
-
-  const handleUnenroll = (courseId: any) => {
-    dispatch(unenrollFromCourse({ userId: currentUser._id, courseId }));
-  };
-  const displayedCourses = showAllCourses
-    ? courses
-    : courses.filter((course) => enrollments.some(
-      (enrollment: any) =>
-        enrollment.user === currentUser._id &&
-        enrollment.course === course._id));
+  console.log(courses)
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
@@ -50,16 +33,15 @@ export default function Dashboard(
           <hr />
         </div>
     )}
-
     {isStudent && (
-        <button className="btn btn-primary float-end mb-3" onClick={handleToggleEnrollmentView}>
-          {showAllCourses ? "View Enrollments" : "All Courses"}
+        <button className="btn btn-primary float-end mb-3" onClick={() => setEnrolling(!enrolling)}>
+          {enrolling ? "My Courses" : "All Courses"}
         </button>
     )}
-      <h2 id="wd-dashboard-published">Published Courses ({displayedCourses.length})</h2> <hr />
+      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
-        {displayedCourses.map((course) => (
+        {courses.map((course) => (
             <div className="wd-dashboard-course col" style={{ width: "300px" }}>
               <div className="card rounded-3 overflow-hidden">
                 <div className="wd-dashboard-course-link text-decoration-none text-dark" >
@@ -92,22 +74,14 @@ export default function Dashboard(
                           </button>
                         </div>
                       )}
-                      {isStudent && (
-                        enrollments.some((e: { course: any; user: any; }) => e.course === course._id && e.user === currentUser._id) ? (
-                          <button
-                            onClick={() => handleUnenroll(course._id)}
-                            className="btn btn-danger ms-2 float-end ms-auto"
-                          >
-                            Unenroll
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleEnroll(course._id)}
-                            className="btn btn-success ms-2 float-end ms-auto"
-                          >
-                            Enroll
-                          </button>
-                        )
+                      {enrolling && (
+                        <button onClick={(event) => {
+                          event.preventDefault();
+                          updateEnrollment(course._id, !course.enrolled);
+                            }}
+                          className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } ms-2 ms-auto float-end`} >
+                          {course.enrolled ? "Unenroll" : "Enroll"}
+                        </button>
                       )}
                       </div>
                   </div>

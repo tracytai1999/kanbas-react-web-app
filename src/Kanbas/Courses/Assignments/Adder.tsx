@@ -41,7 +41,7 @@ export default function AssignmentAdder(){
     const updatesAssignment = async (assignment: any) => {
         await coursesClient.createAssignmentForCourse(cid as string, assignment);
         dispatch(addAssignment(assignment));
-    navigate(-1)
+        navigate(-1)
     };
     const handleCancel = () => {
         navigate(-1); // Navigate back to Assignments screen without saving

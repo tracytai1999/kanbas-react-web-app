@@ -4,7 +4,7 @@ import AssignmentsControls from "./AssignmentsControls";
 import AssignmentHeader from "../Modules/AssignmentHeader";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import { useParams, useNavigate } from "react-router";
-import { deleteAssignment, setAssignment } from './reducer';
+import { setAssignment } from './reducer';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
@@ -32,7 +32,7 @@ export default function Assignments() {
     };
     const removeAssignment = async (assignmentId: string) => {
         await assignmentClient.deleteAssignment(assignmentId);
-        dispatch(deleteAssignment(assignmentId));
+        await fetchAssignments();
     };
     const fetchAssignments = useCallback(async () => {
         console.log("fetchAssignments called");
@@ -44,7 +44,7 @@ export default function Assignments() {
     useEffect(() => {
         console.log("useEffect triggered");
         fetchAssignments();
-    }, [fetchAssignments]); 
+    }, [fetchAssignments, setAssignment]); 
     return (
         <div id="wd-assignments">
             <AssignmentsControls/><br/><br />
