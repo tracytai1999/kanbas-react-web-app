@@ -31,7 +31,11 @@ export const updateCourse = async (course: any) => {
     return data;
 };
 export const createCourse = async (course: any) => {
+  console.log("tracy-tai-debug, createCourse function initiated");
   const { data } = await axiosWithCredentials.post(COURSES_API, course);
+  console.log("tracy-tai-debug, createCourse function posted with couse_api url", COURSES_API);
+  console.log("tracy-tai-debug, createCourse function posted with couse", course);
+  
   return data;
  }; 
 export const findModulesForCourse = async (courseId: string) => {

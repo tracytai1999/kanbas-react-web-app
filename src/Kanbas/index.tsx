@@ -67,10 +67,11 @@ export default function Kanbas() {
     }
   }, [currentUser, enrolling]);
   const [course, setCourse] = useState<any>({
-    _id: "1234", name: "New Course", number: "New Number",
+    _id:`${Date.now()}`, name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
   const addNewCourse = async () => {
+    console.log("tracy-tai-debug, addNewCourse function initiated");
     const newCourse = await courseClient.createCourse(course);
     setCourses([...courses, newCourse]);
   };

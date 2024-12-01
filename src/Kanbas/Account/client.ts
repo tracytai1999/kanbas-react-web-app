@@ -9,6 +9,7 @@ export const findMyCourses = async () => {
 };
 export const signin = async (credentials: any) => {
   const response = await axiosWithCredentials.post(`${USERS_API}/signin`, credentials);
+  console.log("remote_server url is: ", `${REMOTE_SERVER}`);
   return response.data;
 };
 export const signup = async (user: any) => {
